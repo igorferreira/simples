@@ -1,4 +1,4 @@
-package simples;
+package com.github.igorferreira.simples;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class Main {
+public class App {
 
 	public static final String utcFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
