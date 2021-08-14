@@ -6,16 +6,21 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static java.time.temporal.ChronoUnit.*;
+
 public class App {
+	
+	private static final String LOG_INICIO = "----------------------------------------------------------------------------------INICIO";
+	
+	public static final String UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String BR_FORMAT = "dd-MM-yyy HH:mm:ss";
 
-	public static final String utcFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public void main(String[] args) throws ParseException {
 
-	public static void main(String[] args) throws ParseException {
 
 		java.util.Date date= new Date();
 		Calendar cal = Calendar.getInstance();
@@ -40,13 +45,13 @@ public class App {
 		System.out.println("Date em UTC Zone from instant from localDateTimeUTC........: " + dateUTC );
 
 
-		SimpleDateFormat sdfUTC = new SimpleDateFormat(utcFormat);
+		SimpleDateFormat sdfUTC = new SimpleDateFormat(UTC_FORMAT);
 		sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		String createDateStringUTC = "2021-08-11T21:50:30Z";
 
 		System.out.println("\n");
-		System.out.println("utcFormat....................................: " + utcFormat );
+		System.out.println("utcFormat....................................: " + UTC_FORMAT );
 		System.out.println("Date String no formato ......................: " + createDateStringUTC);
 		Date createDatUTC = sdfUTC.parse(createDateStringUTC);
 		System.out.println("Date Object no formato BRT ..................: " + createDatUTC);
@@ -55,19 +60,19 @@ public class App {
 
 
 		System.out.println("TESTE 1 MES DE DIFERENÇA EXATO ");
-		System.out.println("----------------------------------------------------------------------------------INICIO");
+		System.out.println(LOG_INICIO);
 		String startDateStringUTC = "2021-08-11T21:50:30Z";
 		String endDateStringUTC = "2021-09-11T21:50:30Z";
 		testeData(startDateStringUTC, endDateStringUTC);
 
 		System.out.println("TESTE DIFERENÇA: MENOS DE 1 MES EM FEVEREIRO ");
-		System.out.println("----------------------------------------------------------------------------------INICIO");
+		System.out.println(LOG_INICIO);
 		startDateStringUTC = "2022-02-11T21:50:30Z";
 		endDateStringUTC = "2022-03-11T21:50:30Z";
 		testeData(startDateStringUTC, endDateStringUTC);
 
 		System.out.println("TESTE DIFERENÇA: MENOS DE 1 MES EM FEVEREIRO + 15 DIAS");
-		System.out.println("----------------------------------------------------------------------------------INICIO");
+		System.out.println(LOG_INICIO);
 		startDateStringUTC = "2022-02-11T21:50:30Z";
 		endDateStringUTC = "2022-03-26T21:50:30Z";
 		testeData(startDateStringUTC, endDateStringUTC);
@@ -109,21 +114,48 @@ public class App {
 		 */
 	}
 
-	private static void testeData(String startDateStringUTC,String endDateStringUTC) throws ParseException {
+	public static void testeData(String startDateStringUTC,String endDateStringUTC) throws ParseException {
 
-		String brFormat = "dd-MM-yyy HH:mm:ss";
-		SimpleDateFormat sdfUTC = new SimpleDateFormat(utcFormat);
+		SimpleDateFormat sdfUTC = new SimpleDateFormat(UTC_FORMAT);
 		sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date startDateUTC;
 		Date endDateUTC;
 		startDateUTC = sdfUTC.parse(startDateStringUTC);
 		endDateUTC = sdfUTC.parse(endDateStringUTC);
 		//.toInstant().atOffset(ZoneOffset.UTC)
-		long hours = java.time.temporal.ChronoUnit.HOURS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
-		long days = java.time.temporal.ChronoUnit.DAYS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
-		long months = java.time.temporal.ChronoUnit.MONTHS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
-		long weeks = java.time.temporal.ChronoUnit.WEEKS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
-		System.out.println(String.format("Diferença entre datas UTC:\n%s\n%s\n",new Object[] {startDateStringUTC, endDateStringUTC}));
+		long hours = HOURS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long days = DAYS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long months = MONTHS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long weeks = WEEKS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		System.out.println(String.format("Diferença entre datas UTC:%n%s%n%s%n",new String[] {startDateStringUTC, endDateStringUTC}));
+		System.out.println("Em Meses..........: " + months);
+		System.out.println("Em Semanas........: " + weeks);
+		System.out.println("Em Dias...........: " + days);
+		System.out.println("Em Horas..........: " + hours);
+		System.out.println("\nFORMATA DATAS PARA TIMEZONE BRT e pattern: " + BR_FORMAT +"\n");
+		SimpleDateFormat sdfBRT = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+		sdfUTC.setTimeZone(TimeZone.getTimeZone("BRT"));
+		String startDateStringBRT = sdfBRT.format(startDateUTC);
+		String endDateStringBRT = sdfBRT.format(endDateUTC);
+		System.out.println(String.format("datas convertidas para BRT:%n%s%n%s%n",new Object[] {startDateStringBRT, endDateStringBRT}));
+		System.out.println("----------------------------------------------------------------------------------FIM \n\n");
+	}
+
+	public static boolean isMoreOneYear(String startDateStringUTC, String endDateStringUTC) throws ParseException {
+
+		String brFormat = "dd-MM-yyy HH:mm:ss";
+		SimpleDateFormat sdfUTC = new SimpleDateFormat(UTC_FORMAT);
+		sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date startDateUTC;
+		Date endDateUTC;
+		startDateUTC = sdfUTC.parse(startDateStringUTC);
+		endDateUTC = sdfUTC.parse(endDateStringUTC);
+		//.toInstant().atOffset(ZoneOffset.UTC)
+		long hours = HOURS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long days = DAYS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long months = MONTHS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		long weeks = WEEKS.between(startDateUTC.toInstant().atOffset(ZoneOffset.UTC),endDateUTC.toInstant().atOffset(ZoneOffset.UTC));
+		System.out.println(String.format("Diferença entre datas UTC:%n%s%n%s%n",new Object[] {startDateStringUTC, endDateStringUTC}));
 		System.out.println("Em Meses..........: " + months);
 		System.out.println("Em Semanas........: " + weeks);
 		System.out.println("Em Dias...........: " + days);
@@ -133,7 +165,10 @@ public class App {
 		sdfUTC.setTimeZone(TimeZone.getTimeZone("BRT"));
 		String startDateStringBRT = sdfBRT.format(startDateUTC);
 		String endDateStringBRT = sdfBRT.format(endDateUTC);
-		System.out.println(String.format("datas convertidas para BRT:\n%s\n%s\n",new Object[] {startDateStringBRT, endDateStringBRT}));
+		System.out.println(String.format("datas convertidas para BRT:%n%s%n%s%n",new Object[] {startDateStringBRT, endDateStringBRT}));
 		System.out.println("----------------------------------------------------------------------------------FIM \n\n");
+
+		return days > 365;
+
 	}
 }
