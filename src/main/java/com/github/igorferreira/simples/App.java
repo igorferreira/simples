@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.joda.time.LocalDate;
+
 import static java.time.temporal.ChronoUnit.*;
 
 public class App {
@@ -19,7 +21,7 @@ public class App {
 	public static final String UTC_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	public static final String BR_FORMAT = "dd-MM-yyy HH:mm:ss";
 
-	public void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws ParseException {
 
 
 		java.util.Date date= new Date();
@@ -44,6 +46,13 @@ public class App {
 		Date dateUTC = Date.from(instant);
 		System.out.println("Date em UTC Zone from instant from localDateTimeUTC........: " + dateUTC );
 
+		System.out.println("\n");
+		LocalDate theLocalDate = LocalDate.fromDateFields(dateUTC);
+		System.out.println("Date em UTC.....: " + dateUTC );
+		System.out.println("getMonthOfYear..: "+ theLocalDate.getMonthOfYear());
+		System.out.println("getMonthOfYear..: "+ theLocalDate.getYear());
+
+		System.out.println("\n\n\n\n\n\n\n");
 
 		SimpleDateFormat sdfUTC = new SimpleDateFormat(UTC_FORMAT);
 		sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
